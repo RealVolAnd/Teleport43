@@ -67,7 +67,24 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.MainActivity" />
+            tools:context=".ui.MainActivity" >
+
+            <TextView
+                android:id="@+id/main_help_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/main_help_text_shape"
+                android:fontFamily="@font/inter_regular"
+                android:padding="16dp"
+                android:text="App not works - please click this first"
+                android:textAlignment="viewStart"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 

@@ -8,6 +8,9 @@ class App : Application() {
 
     companion object {
         lateinit var instance: App
+        var LON: Double = 14.7896
+        var LAT: Double = -15.9075
+        var ALT: Double = 10.0
     }
 
     override fun onCreate() {
