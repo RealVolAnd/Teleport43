@@ -18,10 +18,10 @@ class MockLocationProvider(private val providerName: String) {
                 true, true, ProviderProperties.POWER_USAGE_HIGH, ProviderProperties.ACCURACY_COARSE
             )
             lm.setTestProviderEnabled(providerName, true)
-            App.hasTrouble = false
+            App.isMockDefault = true
         } catch (e:Exception){
-            App.hasTrouble = true
-            App.instance.showMessage(App.instance.getString(R.string.no_mock))
+            App.isMockDefault = false
+          //  App.instance.showMessage(App.instance.getString(R.string.no_mock))
         }
 
     }

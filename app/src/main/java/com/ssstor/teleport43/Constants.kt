@@ -3,6 +3,7 @@ package com.ssstor.teleport43
 import com.ssstor.teleport43.database.entities.LocationItem
 
 val COORDINATES_REFRESH_INTERVAL_IN_MS = 1000L
+val CHECK_STATUS_INTERVAL_IN_MS = 1000L
 
 val DB_NAME = "t43_db"
 val BASE_RESOURCES_PATH = "android.resource://com.ssstor.teleport43/"

@@ -18,7 +18,11 @@ class App : Application() {
         val ALT:Double = 16.0
         var CURRENT_ITEM: LocationItem = DEFAULT_LOCATION_ITEM
         var locationChanged = true
-        var hasTrouble = false
+        var isGpsOn = false
+        var isMockDefault = false
+        var isLocationPermission = false
+        var isNetGpsOff = false
+        var isPowerModeSet = false
     }
     /*
     val MIGRATION_1_2 = object : Migration(1, 2) {

@@ -1,9 +1,11 @@
 package com.ssstor.teleport43.ui
 
 import android.Manifest
+import android.app.Service
 import android.app.role.RoleManager
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.LocationManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
+import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,7 @@ import com.ssstor.teleport43.*
 import com.ssstor.teleport43.BROADCAST_CLOSE_APP
 import com.ssstor.teleport43.databinding.ActivityMainBinding
 import com.ssstor.teleport43.repo.MainRepo
+import com.ssstor.teleport43.services.MockLocationProvider
 import com.ssstor.teleport43.services.MockLocationService
 
 class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener, OnItemClick {
@@ -31,6 +35,7 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
     private val sharedPreference: SharedPreference = SharedPreference(App.instance)
     private lateinit var presenter: MainPresenter
     private var adapter: MainRvAdapter? = null
+
 
     var REQUIRED_PERMISSIONS_SDK_29_AND_ABOVE = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION
@@ -50,21 +55,22 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         vb = ActivityMainBinding.inflate(layoutInflater)
         setContentView(vb.root)
         presenter = MainPresenter(this)
+        pm = getSystemService(POWER_SERVICE) as PowerManager
 
         vb.locationItemsRv.layoutManager = LinearLayoutManager(this)
         adapter = MainRvAdapter(presenter, this)
         vb.locationItemsRv.adapter = adapter
 
-       // setAppAsMockProvider()
         initViews()
         checkPermissions()
-        setPowerMode()
-        startMyService()
+
         setBroadcastReceiver()
+        checkStatus()
+        startMyService()
     }
 
     override fun onDestroy() {
-        if(App.hasTrouble) stopMyService()
+       // if(App.hasTrouble) stopMyService()
         super.onDestroy()
     }
 
@@ -73,10 +79,18 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
     }
 
     private fun checkPermissions(){
-        requestPermissions(
-            REQUIRED_PERMISSIONS_SDK_29_AND_ABOVE,
-            REQUEST_CODE
-        )
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                REQUIRED_PERMISSIONS_SDK_29_AND_ABOVE,
+                REQUEST_CODE
+            )
+            App.isLocationPermission = false
+        } else {
+            App.isLocationPermission = true
+            setPowerMode()
+        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -87,14 +101,8 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission is granted, you can perform your operation here
+               // App.isLocationPermission = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
 
-                } else {
-                    // permission is denied, you can ask for permission again, if you want
-                    //  askForPermissions()
-
-                }
                 return
             }
         }
@@ -125,10 +133,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
             stopMyService()
         }
 
-        vb.helpButton.setOnClickListener {
-            showHelp()
-        }
-
         vb.itemCancelButton.setOnClickListener {
             hideEditItemDialog()
         }
@@ -136,56 +140,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         vb.itemSaveButton.setOnClickListener {
             presenter.saveItem(vb.itemNameText.text.toString(),vb.itemTrackText.text.toString())
             hideEditItemDialog()
-        }
-
-
-        vb.ch1.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                helpCheckListDone++
-                checkCheckList()
-            } else {
-                helpCheckListDone--
-                checkCheckList()
-            }
-        }
-
-        vb.ch2.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                helpCheckListDone++
-                checkCheckList()
-            } else {
-                helpCheckListDone--
-                checkCheckList()
-            }
-        }
-
-        vb.ch3.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                helpCheckListDone++
-                checkCheckList()
-            } else {
-                helpCheckListDone--
-                checkCheckList()
-            }
-        }
-
-        vb.ch4.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                helpCheckListDone++
-                checkCheckList()
-            } else {
-                helpCheckListDone--
-                checkCheckList()
-            }
-        }
-
-        if(sharedPreference.getValueInt("help_status")!=4){
-            helpCheckListDone = 0
-            sharedPreference.saveInt("help_status",0)
-            showHelp()
-        } else {
-            helpCheckListDone = 4
-            hideHelp()
         }
     }
 
@@ -218,9 +172,14 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
 
     }
 
+    private fun checkGps(){
+        val mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        App.isGpsOn = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        App.isNetGpsOff = !mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
     private fun setPowerMode() {
-        val s = packageName
-        pm = getSystemService(POWER_SERVICE) as PowerManager
+
         if (!pm.isIgnoringBatteryOptimizations(packageName)) {
             val intentIgnoreBattery = Intent(
                 Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
@@ -228,6 +187,11 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
             )
             startActivity(intentIgnoreBattery)
         }
+    }
+
+    private fun checkPowerMode() {
+        App.isPowerModeSet = pm.isIgnoringBatteryOptimizations(packageName)
+        val d = 0
     }
 
     private fun startMyService(){
@@ -263,15 +227,7 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         sharedPreference.saveInt("help_status",helpCheckListDone)
     }
 
-    private fun showHelp(){
-        vb.ch1.isChecked = false
-        vb.ch2.isChecked = false
-        vb.ch3.isChecked = false
-        vb.ch4.isChecked = false
-        helpCheckListDone = 0
-        sharedPreference.saveInt("help_status",helpCheckListDone)
-        vb.mainHelpLayout.visibility = View.VISIBLE
-    }
+
 
     private fun hideHelp(){
         vb.mainHelpLayout.visibility = View.GONE
@@ -296,6 +252,78 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         App.locationChanged = true
         vb.currentItemText.text = tmpItem.locationItemName
         MainRepo.addHitToItemById(itemId)
+    }
+
+    private fun checkMock(){
+        val lm = getSystemService(Service.LOCATION_SERVICE) as LocationManager
+        val mock_gps: MockLocationProvider = MockLocationProvider(LocationManager.GPS_PROVIDER)
+
+    }
+
+    private fun checkStatus(){
+        Thread{
+            while(true){
+                checkGps()
+                checkPermissions()
+               // checkPowerMode()
+              //  checkMock()
+
+                Thread.sleep(CHECK_STATUS_INTERVAL_IN_MS)
+
+                var totalStatus = false
+
+                if(App.isGpsOn) {
+                    vb.helpGpsLayout.background.setTint(resources.getColor(R.color.noalert_color))
+                }else {
+                    vb.helpGpsLayout.background.setTint(resources.getColor(R.color.alert_color))
+                    totalStatus = true
+                }
+
+                if(App.isNetGpsOff) {
+                    vb.helpGoogleLayout.background.setTint(resources.getColor(R.color.noalert_color))
+                }else {
+                    vb.helpGoogleLayout.background.setTint(resources.getColor(R.color.alert_color))
+                    totalStatus = true
+                }
+
+                if(App.isLocationPermission) {
+                    vb.helpPermissionsLayout.background.setTint(resources.getColor(R.color.noalert_color))
+                }else {
+                    vb.helpPermissionsLayout.background.setTint(resources.getColor(R.color.alert_color))
+                    totalStatus = true
+                }
+
+                if(App.isMockDefault) {
+                    vb.helpMockLayout.background.setTint(resources.getColor(R.color.noalert_color))
+                }else {
+                    vb.helpMockLayout.background.setTint(resources.getColor(R.color.alert_color))
+                    totalStatus = true
+                }
+/*
+                if(App.isPowerModeSet) {
+                    //vb.helpPermissionsLayout.background.setTint(resources.getColor(R.color.noalert_color))
+                }else {
+                    vb.helpPermissionsLayout.background.setTint(resources.getColor(R.color.alert_color))
+                    totalStatus = true
+                }
+*/
+                if(totalStatus) showStatus() else hideStatus()
+            }
+
+
+        }.start()
+    }
+
+    private fun showStatus(){
+       runOnUiThread{
+               vb.mainHelpLayout.visibility = View.VISIBLE
+        }
+
+    }
+    private fun hideStatus(){
+        runOnUiThread {
+            vb.mainHelpLayout.visibility = View.GONE
+        }
     }
 
 

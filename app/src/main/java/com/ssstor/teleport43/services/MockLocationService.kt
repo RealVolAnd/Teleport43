@@ -27,7 +27,7 @@ class MockLocationService : Service() {
     private var currentBlankMediaPlayersList = arrayListOf<MediaPlayer>()
 
     val mock_gps: MockLocationProvider = MockLocationProvider(LocationManager.GPS_PROVIDER)
-    val mock_net: MockLocationProvider = MockLocationProvider(LocationManager.NETWORK_PROVIDER)
+    //val mock_net: MockLocationProvider = MockLocationProvider(LocationManager.NETWORK_PROVIDER)
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -42,7 +42,7 @@ class MockLocationService : Service() {
     override fun onDestroy() {
         stopBlankMediaPlayers()
         mock_gps.shutdown()
-        mock_net.shutdown()
+       // mock_net.shutdown()
         super.onDestroy()
         stopApplication()
     }
@@ -106,8 +106,8 @@ class MockLocationService : Service() {
                 for(i in latArray.indices){
                     mock_gps.pushLocation(latArray[i], lonArray[i], App.ALT)
                     Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
-                    mock_net.pushLocation(latArray[i], lonArray[i], App.ALT)
-                    Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
+                    //mock_net.pushLocation(latArray[i], lonArray[i], App.ALT)
+                   // Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
                 }
 
             }
