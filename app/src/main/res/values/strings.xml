@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Teleport43</string>
     <string name="help_short_text">App not works - please click this first</string>
+    <string name="help_title">There are some things must be checked if App not works properly. Please fill full checklist</string>
+    <string name="help_1">GPS must be ON</string>
+    <string name="help_2">Teleport43 must be set as Mock location provider in Phone->Settings->For Developers</string>
+    <string name="help_3">Google Geolocation must be OFF</string>
+    <string name="help_4">All requested permissions has been granted</string>
 </resources>

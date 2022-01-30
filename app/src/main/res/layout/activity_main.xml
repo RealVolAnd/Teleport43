@@ -45,6 +45,13 @@
                     android:textSize="24sp" />
 
                 <ImageView
+                    android:id="@+id/help_button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    app:srcCompat="@drawable/ic_action_help" />
+
+                <ImageView
                     android:id="@+id/close_button"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
@@ -69,21 +76,199 @@
             android:layout_height="match_parent"
             tools:context=".ui.MainActivity" >
 
-            <TextView
-                android:id="@+id/main_help_text"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/location_items_rv"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/main_help_text_shape"
-                android:fontFamily="@font/inter_regular"
-                android:padding="16dp"
-                android:text="App not works - please click this first"
-                android:textAlignment="viewStart"
-                android:textColor="@color/white"
-                android:textSize="16sp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/main_help_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/main_help_text_shape"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/main_help_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:fontFamily="@font/inter_semi_bold"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/help_title"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/main_help_content_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:visibility="visible"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="4dp"
+                        android:background="@drawable/main_help_item_shape"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/t12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="@string/help_1"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/ch1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:button="@null"
+                            android:checked="false"
+                            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="@null"
+                            android:textAlignment="gravity"
+                            android:theme="@style/CustomSwitchColor" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="4dp"
+                        android:background="@drawable/main_help_item_shape"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/t22"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="@string/help_2"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/ch2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:button="@null"
+                            android:checked="false"
+                            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="@null"
+                            android:textAlignment="gravity"
+                            android:theme="@style/CustomSwitchColor" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="4dp"
+                        android:background="@drawable/main_help_item_shape"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/t32"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="@string/help_3"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/ch3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:button="@null"
+                            android:checked="false"
+                            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="@null"
+                            android:textAlignment="gravity"
+                            android:theme="@style/CustomSwitchColor" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="4dp"
+                        android:background="@drawable/main_help_item_shape"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:id="@+id/t42"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/inter_regular"
+                            android:text="@string/help_4"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                        <CheckBox
+                            android:id="@+id/ch4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:button="@null"
+                            android:checked="false"
+                            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                            android:drawablePadding="0dp"
+                            android:gravity="center"
+                            android:text="@null"
+                            android:textAlignment="gravity"
+                            android:theme="@style/CustomSwitchColor" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

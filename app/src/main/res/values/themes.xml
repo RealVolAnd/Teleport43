@@ -15,4 +15,9 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>
     </style>
+
+    <style name="CustomSwitchColor" parent="ThemeOverlay.MaterialComponents.Light">
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorSecondary">@color/white</item>
+    </style>
 </resources>
