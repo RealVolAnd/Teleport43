@@ -5,17 +5,25 @@ import android.location.Location
 import android.location.LocationManager
 import android.location.provider.ProviderProperties
 import com.ssstor.teleport43.App
+import com.ssstor.teleport43.R
 import java.lang.Exception
 
 class MockLocationProvider(private val providerName: String) {
     var lm = App.instance.getSystemService(Service.LOCATION_SERVICE) as LocationManager
 
     init {
-        lm.addTestProvider(
-            providerName, false, false, false, false, false,
-            true, true, ProviderProperties.POWER_USAGE_HIGH, ProviderProperties.ACCURACY_COARSE
-        )
-        lm.setTestProviderEnabled(providerName, true)
+        try{
+            lm.addTestProvider(
+                providerName, false, false, false, false, false,
+                true, true, ProviderProperties.POWER_USAGE_HIGH, ProviderProperties.ACCURACY_COARSE
+            )
+            lm.setTestProviderEnabled(providerName, true)
+            App.hasTrouble = false
+        } catch (e:Exception){
+            App.hasTrouble = true
+            App.instance.showMessage(App.instance.getString(R.string.no_mock))
+        }
+
     }
 
     fun pushLocation(lat: Double, lon: Double, alt: Double) {

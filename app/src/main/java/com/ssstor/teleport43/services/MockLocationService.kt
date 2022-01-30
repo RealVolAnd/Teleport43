@@ -73,11 +73,43 @@ class MockLocationService : Service() {
 
     private fun startMock() {
         Thread {
+            var coordinates = arrayListOf<String>()
+            var latArray = arrayListOf<Double>()
+            var lonArray = arrayListOf<Double>()
+
             while (true) {
-                mock_gps.pushLocation(App.LON, App.LAT, App.ALT)
-                Thread.sleep(100)
-                mock_net.pushLocation(App.LON, App.LAT, App.ALT)
-                Thread.sleep(100)
+                if (App.locationChanged){
+                    coordinates.clear()
+                    latArray.clear()
+                    lonArray.clear()
+
+                    if(App.CURRENT_ITEM.locationItemTrack.contains(";")){
+                        coordinates = App.CURRENT_ITEM.locationItemTrack.split(";") as ArrayList<String>
+                        coordinates.forEach {
+                            if(it.contains(",")){
+                                val tmpLatLon = it.split(",")
+                                latArray.add(tmpLatLon[0].toDouble())
+                                lonArray.add(tmpLatLon[1].toDouble())
+                            }
+                        }
+                    } else {
+
+                        if(App.CURRENT_ITEM.locationItemTrack.contains(",")){
+                            val tmpLatLon = App.CURRENT_ITEM.locationItemTrack.split(",")
+                            latArray.add(tmpLatLon[0].toDouble())
+                            lonArray.add(tmpLatLon[1].toDouble())
+                        }
+                    }
+                    App.locationChanged = false
+                }
+
+                for(i in latArray.indices){
+                    mock_gps.pushLocation(latArray[i], lonArray[i], App.ALT)
+                    Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
+                    mock_net.pushLocation(latArray[i], lonArray[i], App.ALT)
+                    Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
+                }
+
             }
         }.start()
     }

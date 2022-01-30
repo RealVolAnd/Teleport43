@@ -37,9 +37,11 @@ class MainRvAdapter(private val presenter: MainPresenter,
             holder.itemTypeText.text = ITEM_TYPE_POINT
         }
         holder.itemSettingsButton.setOnClickListener {
+            App.CURRENT_ITEM = presenter.itemList[position]
             itemClickListener.onItemToolButtonClick(presenter.itemList[position].locationItemId)
         }
         holder.rootLayout.setOnClickListener {
+            App.CURRENT_ITEM = presenter.itemList[position]
             itemClickListener.onItemClick(presenter.itemList[position].locationItemId)
         }
     }

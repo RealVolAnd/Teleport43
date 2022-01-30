@@ -15,10 +15,10 @@ class App : Application() {
     companion object {
         lateinit var instance: App
         lateinit var db: LocationItemsDatabase
-        var LON: Double = 14.7896
-        var LAT: Double = -15.9075
-        var ALT: Double = 10.0
+        val ALT:Double = 16.0
         var CURRENT_ITEM: LocationItem = DEFAULT_LOCATION_ITEM
+        var locationChanged = true
+        var hasTrouble = false
     }
     /*
     val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -42,8 +42,8 @@ class App : Application() {
         Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
     }
 
-    fun itemStringToList(itemString: String): ArrayList<String>{
-        var result:ArrayList<String> = itemString.split(";") as ArrayList<String>
+    fun itemStringToList(itemString: String): List<String>{
+        var result= itemString.split(";")
         return result
     }
 }

@@ -3,7 +3,13 @@
     <string name="help_short_text">App not works - please click this first</string>
     <string name="help_title">There are some things must be checked if App not works properly. Please fill full checklist</string>
     <string name="help_1">GPS must be ON</string>
-    <string name="help_2">Teleport43 must be set as Mock location provider in Phone->Settings->For Developers</string>
+    <string name="help_2">Teleport43 must be set as Mock location provider in Phone ->Settings ->System ->For Developers</string>
     <string name="help_3">Google Geolocation must be OFF</string>
     <string name="help_4">All requested permissions has been granted</string>
+    <string name="cancel">Cancel</string>
+    <string name="import_cap">Import</string>
+    <string name="save">Save</string>
+    <string name="new_item">New Item</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="no_mock">Teleport43 not set as default mock location provider. Please fill full checklist and restart the app</string>
 </resources>

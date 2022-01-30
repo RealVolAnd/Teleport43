@@ -14,9 +14,11 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.ssstor.teleport43.*
 import com.ssstor.teleport43.BROADCAST_CLOSE_APP
 import com.ssstor.teleport43.databinding.ActivityMainBinding
+import com.ssstor.teleport43.repo.MainRepo
 import com.ssstor.teleport43.services.MockLocationService
 
 class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener, OnItemClick {
@@ -61,6 +63,11 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         setBroadcastReceiver()
     }
 
+    override fun onDestroy() {
+        if(App.hasTrouble) stopMyService()
+        super.onDestroy()
+    }
+
     fun setAppAsMockProvider() {
         startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
     }
@@ -95,6 +102,25 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
 
     private fun  initViews(){
 
+        vb.appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
+            override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
+                when (state) {
+                    State.COLLAPSED -> {
+                        vb.currentItemText.visibility = View.VISIBLE
+                    }
+                    State.EXPANDED -> {
+                    }
+
+                    State.IDLE -> {
+                    }
+                }
+            }
+        })
+
+        vb.itemAddFab.setOnClickListener {
+            showEditItemDialog(FLAG_ADD_ITEM,0)
+        }
+
         vb.closeButton.setOnClickListener {
             stopMyService()
         }
@@ -102,6 +128,16 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         vb.helpButton.setOnClickListener {
             showHelp()
         }
+
+        vb.itemCancelButton.setOnClickListener {
+            hideEditItemDialog()
+        }
+
+        vb.itemSaveButton.setOnClickListener {
+            presenter.saveItem(vb.itemNameText.text.toString(),vb.itemTrackText.text.toString())
+            hideEditItemDialog()
+        }
+
 
         vb.ch1.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -151,6 +187,30 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
             helpCheckListDone = 4
             hideHelp()
         }
+    }
+
+    private fun  showEditItemDialog(flag:Int,itemId:Long){
+        when(flag){
+            FLAG_ADD_ITEM ->{
+                vb.itemEditTitle.text = getString(R.string.new_item)
+                vb.itemEditLayout.visibility = View.VISIBLE
+            }
+            FLAG_EDIT_ITEM ->{
+                vb.itemEditTitle.text = getString(R.string.edit_item)
+                val tmpItem = MainRepo.getItemById(itemId)
+                vb.itemNameText.setText(tmpItem.locationItemName)
+                vb.itemTrackText.setText(tmpItem.locationItemTrack)
+                vb.itemEditLayout.visibility = View.VISIBLE
+            }
+        }
+        vb.itemAddFab.visibility = View.GONE
+    }
+
+    private fun  hideEditItemDialog(){
+        vb.itemNameText.setText("")
+        vb.itemTrackText.setText("")
+        vb.itemEditLayout.visibility = View.GONE
+        vb.itemAddFab.visibility = View.VISIBLE
     }
 
     override fun updateList() {
@@ -223,11 +283,19 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
     }
 
     override fun onItemToolButtonClick(itemId: Long) {
-        TODO("Not yet implemented")
+       showEditItemDialog(FLAG_EDIT_ITEM,itemId)
     }
 
     override fun onItemClick(itemId: Long) {
-        TODO("Not yet implemented")
+        setActiveItem(itemId)
+    }
+
+    private fun setActiveItem(itemId: Long){
+        val tmpItem = MainRepo.getItemById(itemId)
+        App.CURRENT_ITEM = tmpItem
+        App.locationChanged = true
+        vb.currentItemText.text = tmpItem.locationItemName
+        MainRepo.addHitToItemById(itemId)
     }
 
 
