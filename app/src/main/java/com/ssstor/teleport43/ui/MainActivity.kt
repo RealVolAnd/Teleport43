@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.ssstor.teleport43.*
 import com.ssstor.teleport43.BROADCAST_CLOSE_APP
+import com.ssstor.teleport43.database.entities.LocationSettings
 import com.ssstor.teleport43.databinding.ActivityMainBinding
 import com.ssstor.teleport43.repo.MainRepo
 import com.ssstor.teleport43.services.MockLocationProvider
@@ -32,7 +33,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
     private val REQUEST_CODE = 1010
     private var isHelpVisible = false
     private var helpCheckListDone = 0
-    private val sharedPreference: SharedPreference = SharedPreference(App.instance)
     private lateinit var presenter: MainPresenter
     private var adapter: MainRvAdapter? = null
 
@@ -110,6 +110,9 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
 
     private fun  initViews(){
 
+        val tmpInt = MainRepo.getSettingsCountByKey(SETTINGS_KEY_CURRENT_LOCATION)
+        if(tmpInt==0) MainRepo.insertSettings(LocationSettings(0,SETTINGS_KEY_CURRENT_LOCATION,"0"))
+
         vb.appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
                 when (state) {
@@ -138,22 +141,46 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
         }
 
         vb.itemSaveButton.setOnClickListener {
-            presenter.saveItem(vb.itemNameText.text.toString(),vb.itemTrackText.text.toString())
+            presenter.saveItem(vb.itemIdText.text.toString().toLong(),vb.itemNameText.text.toString(),vb.itemTrackText.text.toString())
             hideEditItemDialog()
         }
+
+        vb.itemDeleteButton.setOnClickListener {
+            presenter.deleteItem(vb.itemIdText.text.toString().toLong())
+            hideEditItemDialog()
+            App.instance.showMessage("Location deleted")
+        }
+
+        setCurrentLocation()
+
+    }
+
+    private fun setCurrentLocation(){
+        var curLoc = 0L
+       curLoc = MainRepo.getSettingsValueByKey(SETTINGS_KEY_CURRENT_LOCATION).toLong()
+        setActiveItem(curLoc)
     }
 
     private fun  showEditItemDialog(flag:Int,itemId:Long){
         when(flag){
             FLAG_ADD_ITEM ->{
+                vb.itemIdText.text = itemId.toString()
                 vb.itemEditTitle.text = getString(R.string.new_item)
+                vb.itemDeleteButton.visibility = View.GONE
                 vb.itemEditLayout.visibility = View.VISIBLE
+
             }
             FLAG_EDIT_ITEM ->{
+                vb.itemIdText.text = itemId.toString()
                 vb.itemEditTitle.text = getString(R.string.edit_item)
                 val tmpItem = MainRepo.getItemById(itemId)
                 vb.itemNameText.setText(tmpItem.locationItemName)
                 vb.itemTrackText.setText(tmpItem.locationItemTrack)
+                if(MainRepo.getSettingsValueByKey(SETTINGS_KEY_CURRENT_LOCATION).toLong()!=itemId) {
+                    vb.itemDeleteButton.visibility = View.VISIBLE
+                } else {
+                    vb.itemDeleteButton.visibility = View.GONE
+                }
                 vb.itemEditLayout.visibility = View.VISIBLE
             }
         }
@@ -220,14 +247,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
             .registerReceiver(broadcastReceiver, IntentFilter(ACTION))
     }
 
-    private fun checkCheckList(){
-        if(helpCheckListDone == 4){
-            hideHelp()
-        }
-        sharedPreference.saveInt("help_status",helpCheckListDone)
-    }
-
-
 
     private fun hideHelp(){
         vb.mainHelpLayout.visibility = View.GONE
@@ -247,11 +266,19 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
     }
 
     private fun setActiveItem(itemId: Long){
-        val tmpItem = MainRepo.getItemById(itemId)
-        App.CURRENT_ITEM = tmpItem
-        App.locationChanged = true
-        vb.currentItemText.text = tmpItem.locationItemName
-        MainRepo.addHitToItemById(itemId)
+        if(itemId>0) {
+            val tmpItem = MainRepo.getItemById(itemId)
+            App.CURRENT_ITEM = tmpItem
+            App.locationChanged = true
+            vb.currentItemText.text = tmpItem.locationItemName
+            MainRepo.addHitToItemById(itemId)
+            MainRepo.setSettingsValueByKey(SETTINGS_KEY_CURRENT_LOCATION,itemId.toString())
+        }else {
+            App.CURRENT_ITEM = DEFAULT_LOCATION_ITEM
+            vb.currentItemText.text = "DEFAULT"
+            App.locationChanged = true
+        }
+
     }
 
     private fun checkMock(){

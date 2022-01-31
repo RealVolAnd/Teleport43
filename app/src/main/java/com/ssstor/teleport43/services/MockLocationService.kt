@@ -56,11 +56,13 @@ class MockLocationService : Service() {
         )
 
         notification = Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle("Teleport43")
-            .setContentText("Status: Active")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(App.CURRENT_ITEM.locationItemName)
+            .setContentText("Click to open App interface")
+            .setSubText("Active")
+            .setSmallIcon(R.drawable.ic_stat_t43_notify_icon)
             .setContentIntent(resultPendingIntent)
-            .setTicker("ticker")
+            .setColorized(true)
+            .setColor(getResources().getColor(R.color.main_title_color))
             .build()
 
 
@@ -68,6 +70,19 @@ class MockLocationService : Service() {
         startPlayBlankAudio()
         startMock()
         return START_STICKY
+    }
+
+    private fun updateNotification(){
+        notification = Notification.Builder(this, CHANNEL_ID)
+            .setContentTitle(App.CURRENT_ITEM.locationItemName)
+            .setContentText("click to open App interface")
+            .setSubText("Active")
+            .setSmallIcon(R.drawable.ic_stat_t43_notify_icon)
+            .setContentIntent(resultPendingIntent)
+            .setColorized(true)
+            .setColor(getResources().getColor(R.color.main_title_color))
+            .build()
+        notificationManager.notify(NOTIFICATION_MAIN_ID, notification)
     }
 
 
@@ -79,6 +94,7 @@ class MockLocationService : Service() {
 
             while (true) {
                 if (App.locationChanged){
+                    updateNotification()
                     coordinates.clear()
                     latArray.clear()
                     lonArray.clear()
@@ -104,8 +120,10 @@ class MockLocationService : Service() {
                 }
 
                 for(i in latArray.indices){
+                    if (App.locationChanged) break
                     mock_gps.pushLocation(latArray[i], lonArray[i], App.ALT)
                     Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
+
                     //mock_net.pushLocation(latArray[i], lonArray[i], App.ALT)
                    // Thread.sleep(COORDINATES_REFRESH_INTERVAL_IN_MS)
                 }

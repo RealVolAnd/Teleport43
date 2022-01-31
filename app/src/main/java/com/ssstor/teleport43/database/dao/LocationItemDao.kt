@@ -17,9 +17,18 @@ interface LocationItemDao {
     @Query("SELECT * FROM locationitems WHERE id =:itemId")
     fun getItemById(itemId: Long): LocationItem
 
+    @Query("SELECT COUNT(id) FROM locationitems WHERE itemName =:itemName")
+    fun getItemCountByName(itemName: String): Int
+
     @Query("UPDATE locationitems SET itemHitCount = itemHitCount+1 WHERE id =:itemId")
     fun incrItemHitCountById(itemId: Long)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Query("UPDATE locationitems SET itemName = :itemName,itemTrack = :itemTrack  WHERE id =:itemId")
+    fun updateItemById(itemId: Long,itemName: String,itemTrack: String)
+
+    @Query("DELETE FROM locationitems WHERE id =:itemId")
+    fun deleteItemById(itemId: Long)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(locationItem: LocationItem)
 }

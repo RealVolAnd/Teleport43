@@ -7,6 +7,7 @@ interface MainContract {
 
     interface Presenter {
         fun backPressed(): Boolean
-        fun saveItem(itemName: String, itemTrack: String)
+        fun saveItem(itemId:Long, itemName: String, itemTrack: String)
+        fun deleteItem(itemId: Long)
     }
 }
