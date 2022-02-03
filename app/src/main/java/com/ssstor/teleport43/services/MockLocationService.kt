@@ -43,6 +43,7 @@ class MockLocationService : Service() {
         stopBlankMediaPlayers()
         mock_gps.shutdown()
        // mock_net.shutdown()
+        stopForeground(true)
         super.onDestroy()
         stopApplication()
     }
