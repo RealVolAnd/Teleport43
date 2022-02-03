@@ -52,7 +52,7 @@ class MockLocationService : Service() {
 
         resultPendingIntent = PendingIntent.getActivity(
             this,
-            0, openActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            0, openActivityIntent,  PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         notification = Notification.Builder(this, CHANNEL_ID)
