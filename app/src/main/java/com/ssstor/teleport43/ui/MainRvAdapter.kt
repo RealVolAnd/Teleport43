@@ -30,11 +30,14 @@ class MainRvAdapter(private val presenter: MainPresenter,
     override fun onBindViewHolder(holder: MainRvAdapter.ViewHolder, position: Int) {
 
         holder.itemNameText .text = presenter.itemList[position].locationItemName
+
+
+
        val tracksNum = App.instance.itemStringToList(presenter.itemList[position].locationItemTrack).size
         if(tracksNum>1){
-            holder.itemTypeText.text = ITEM_TYPE_TRACK
+            holder.itemType.setImageResource(R.drawable.ic_track)
         } else {
-            holder.itemTypeText.text = ITEM_TYPE_POINT
+            holder.itemType.setImageResource(R.drawable.ic_point)
         }
         holder.itemSettingsButton.setOnClickListener {
             App.CURRENT_ITEM = presenter.itemList[position]
@@ -50,7 +53,7 @@ class MainRvAdapter(private val presenter: MainPresenter,
 
     inner class ViewHolder(private val vb: LocationItemBinding) : RecyclerView.ViewHolder(vb.root) {
         val itemNameText = vb.itemNameText
-        val itemTypeText = vb.itemTypeText
+        val itemType = vb.itemTypeImage
         val itemSettingsButton = vb.itemSettingsButton
         val rootLayout = vb.rootLayout
 

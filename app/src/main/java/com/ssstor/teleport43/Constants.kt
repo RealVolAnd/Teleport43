@@ -4,7 +4,7 @@ import com.ssstor.teleport43.database.entities.LocationItem
 
 val SETTINGS_KEY_CURRENT_LOCATION = "current_location"
 
-val COORDINATES_REFRESH_INTERVAL_IN_MS = 3000L
+val COORDINATES_REFRESH_INTERVAL_IN_MS = 1000L
 val CHECK_STATUS_INTERVAL_IN_MS = 1000L
 
 val DB_NAME = "t43_db"

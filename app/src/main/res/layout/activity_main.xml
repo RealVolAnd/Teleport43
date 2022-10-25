@@ -34,7 +34,7 @@
         android:clickable="true"
         android:elevation="10dp"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/item_delete_button"
@@ -303,6 +303,42 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/title_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/item_title_shape"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+                    <ImageView
+                        android:id="@+id/current_item_icon"
+                        android:layout_width="30dp"
+                        android:layout_height="40dp"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginVertical="4dp"
+                        app:srcCompat="@drawable/ic_point"
+                        app:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/current_item_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="12dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:maxLength="20"
+                        android:paddingHorizontal="16dp"
+                        android:text="DEFAULT"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/main_title_color"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -333,28 +369,6 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/current_item_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/item_title_shape"
-                    android:elevation="12dp"
-                    android:fontFamily="@font/inter_medium"
-                    android:maxLength="20"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="4dp"
-                    android:text="DEFAULT"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textColor="@color/main_title_color"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.Toolbar

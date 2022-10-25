@@ -31,14 +31,11 @@
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/item_type_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            tools:text="Track" />
+        <ImageView
+            android:id="@+id/item_type_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_track" />
 
         <ImageView
             android:id="@+id/itemSettingsButton"

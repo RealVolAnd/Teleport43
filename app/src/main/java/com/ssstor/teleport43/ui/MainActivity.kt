@@ -271,6 +271,14 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
             App.CURRENT_ITEM = tmpItem
             App.locationChanged = true
             vb.currentItemText.text = tmpItem.locationItemName
+
+            val tracksNum = App.instance.itemStringToList(App.CURRENT_ITEM.locationItemTrack).size
+            if(tracksNum>1){
+               vb.currentItemIcon.setImageResource(R.drawable.ic_track)
+            } else {
+                vb.currentItemIcon.setImageResource(R.drawable.ic_point)
+            }
+
             MainRepo.addHitToItemById(itemId)
             MainRepo.setSettingsValueByKey(SETTINGS_KEY_CURRENT_LOCATION,itemId.toString())
         }else {
