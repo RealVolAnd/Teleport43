@@ -286,7 +286,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
             vb.currentItemText.text = "DEFAULT"
             App.locationChanged = true
         }
-
     }
 
     private fun checkMock(){
@@ -344,8 +343,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
 */
                 if(totalStatus) showStatus() else hideStatus()
             }
-
-
         }.start()
     }
 
@@ -353,13 +350,10 @@ class MainActivity : AppCompatActivity(), MainContract.View, BackButtonListener,
        runOnUiThread{
                vb.mainHelpLayout.visibility = View.VISIBLE
         }
-
     }
     private fun hideStatus(){
         runOnUiThread {
             vb.mainHelpLayout.visibility = View.GONE
         }
     }
-
-
 }

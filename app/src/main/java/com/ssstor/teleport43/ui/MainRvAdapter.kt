@@ -31,14 +31,19 @@ class MainRvAdapter(private val presenter: MainPresenter,
 
         holder.itemNameText .text = presenter.itemList[position].locationItemName
 
-
-
        val tracksNum = App.instance.itemStringToList(presenter.itemList[position].locationItemTrack).size
-        if(tracksNum>1){
+        if(tracksNum > 1){
             holder.itemType.setImageResource(R.drawable.ic_track)
         } else {
             holder.itemType.setImageResource(R.drawable.ic_point)
         }
+
+        if(presenter.itemList[position].locationItemId == App.CURRENT_ITEM.locationItemId){
+            holder.rootLayout.setBackgroundResource(R.drawable.item_selected_shape)
+        } else {
+            holder.rootLayout.setBackgroundResource(R.drawable.item_shape)
+        }
+
         holder.itemSettingsButton.setOnClickListener {
             App.CURRENT_ITEM = presenter.itemList[position]
             itemClickListener.onItemToolButtonClick(presenter.itemList[position].locationItemId)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="main_title_color">#005294</color>
+    <color name="item_selected_color">#8F005294</color>
     <color name="alert_bg_color">#FF9800</color>
     <color name="new_green">#009700</color>
     <color name="second_main">#D0D0D0</color>
